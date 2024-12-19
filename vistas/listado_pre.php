@@ -54,8 +54,9 @@ $registros = mysqli_query($cnn, $consulta);
                         <h5 class="card-title" id="color">Codigo Prestamo: <?php echo $fila['codigo']; ?></h5>
                     </div>
                     <div class="card-body" id="card">
-                        <p><strong>Apellido: </strong><?php echo $fila['apellidos']; ?></p>
-                        <p><strong>Pago mensual: </strong>S/. <?php echo number_format($fila['pago_mensual'], 2); ?></p>
+                    <p><strong>DNI: </strong><?php echo $fila['dni']; ?></p>
+                    <p><strong>Apellido: </strong><?php echo $fila['apellidos']; ?></p>
+                    <p><strong>Pago mensual: </strong>S/. <?php echo number_format($fila['pago_mensual'], 2); ?></p>
                     </div>
                     <div class="card-footer" >
                      <small class="text-white" >Última actualización: <?php date_default_timezone_set('America/Lima'); echo date('d/m/Y'); ?></small>

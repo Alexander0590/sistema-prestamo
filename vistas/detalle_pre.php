@@ -12,12 +12,8 @@
 <div class="container my-5">
     <div class="row">
     <?php
-// Paso 1: Conexión a la base de datos
-include("../conexion/conexion.php"); // Asegúrate de que este archivo establece la conexión en la variable $cnn
-
-// Paso 2: Obtener y sanitizar el código
+include("../conexion/conexion.php"); 
 $codi = isset($_GET['codigo']) ? $_GET['codigo'] : null;
-
 if ($codi) {
     // Preparar la consulta para obtener los detalles del préstamo
     $sql = "SELECT p.*, c.nombres, c.apellidos
@@ -63,6 +59,8 @@ if ($codi) {
                 echo '<li class="list-group-item"><strong>Cliente: </strong> ' . htmlspecialchars($row['nombres'] . " " . $row['apellidos']) . '</li>';
                 echo '<li class="list-group-item"><strong>Cantidad Prestada:</strong> S/. ' . number_format($row['cantidad_prestar'], 2) . '</li>';
                 echo '<li class="list-group-item"><strong>Nº Total de Cuotas:</strong> ' . intval($row['cuotas']) . ' cuotas</li>';
+                echo '<li class="list-group-item"><strong>Tipo De Prestamo:</strong> ' . strtolower($row['tipo']) . '</li>';
+
                 echo '</ul>';
                 echo '</div>';
 
@@ -91,7 +89,7 @@ if ($codi) {
                 $monto_por_cuota = floatval(str_replace(',', '.', $row['pago_mensual']));
 
                 $fecha_pago_inicial = strtotime($row['fecha_registro']);
-                $frecuencia = strtolower($row['tipo']);  // Convertir a minúsculas para consistencia
+                $frecuencia = strtolower($row['tipo']);  
 
                 // Preparar una consulta para obtener el estado de cada cuota
                 $sqlDetalle = "SELECT numero_cuota, estado FROM detalle_prestamos WHERE codigo = ?";
@@ -128,22 +126,16 @@ if ($codi) {
 
                     // Verificar el estado de la cuota desde el array de detallePrestamos
                     if (isset($detallePrestamos[$i]) && $detallePrestamos[$i] === 'pagado') {
-                        // Cuota pagada
                         $estado = 'Pagada';
                         $estado_clase = 'bg-success';
                     } else {
-                        // Obtener la fecha de hoy sin la hora
                         $fecha_hoy = strtotime("today");
-
-                        // Comparar la fecha de pago con la fecha de hoy
                         if ($fecha_pago_inicial < $fecha_hoy) {
-                            // Si la fecha de pago es anterior a hoy, el estado será "Vencido"
                             $estado = 'Vencido';
-                            $estado_clase = 'bg-danger';  // Clase CSS para fondo rojo
+                            $estado_clase = 'bg-danger';  
                         } else {
-                            // Si la fecha de pago es hoy o en el futuro
                             $estado = 'Pendiente';
-                            $estado_clase = 'bg-primary';  // Clase CSS para fondo celeste
+                            $estado_clase = 'bg-primary';  
                         }
                     }
 
@@ -152,7 +144,7 @@ if ($codi) {
                     echo '<td>' . htmlspecialchars($fecha_pago_formateada) . '</td>';
                     echo '<td>S/. ' . number_format($monto_por_cuota, 2) . '</td>';
                     echo '<td class="' . $estado_clase . ' text-white">' . $estado . '</td>';
-                    
+
                     if ($estado === 'Pagada') {
                         echo '<td><button class="btn btn-secondary" disabled>Cuota Pagada</button></td>';
                     } else if ($estado === 'Vencido') {
